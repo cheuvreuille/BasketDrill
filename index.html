@@ -24,6 +24,34 @@
     .right .legend{display:grid;gap:8px}.legend div{display:flex;align-items:center;gap:9px;font-size:13px}.legend i{width:10px;height:10px;border-radius:50%;display:block}.stat{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid #ece9e1;font-size:13px}.stat b{font-size:18px}.help{margin-top:15px;padding:12px;border-radius:10px;background:#fff3e8;font-size:12px;color:#80522d}.empty{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;color:#fff9ec;font-weight:700;font-size:14px;text-shadow:0 1px 2px #8c421d}.empty span{display:block;font-size:11px;font-weight:500;margin-top:4px}.empty.hidden{display:none}
     dialog{width:min(92vw,520px);border:0;border-radius:18px;padding:0;color:var(--ink);box-shadow:0 24px 80px #10212d55}dialog::backdrop{background:#10212da8}.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:17px}.dialog-body{padding:20px}.dialog-body label{display:block;margin-bottom:6px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.dialog-body input{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px}.dialog-body p{color:var(--muted);font-size:13px}.dialog-actions{display:flex;gap:8px;margin-top:18px}.drive-status{min-height:20px;margin-top:12px;font-size:12px;font-weight:700;color:#257241}.close-dialog{background:transparent;font-size:22px;color:var(--muted)}details{margin-top:12px;font-size:12px;color:var(--muted)}summary{cursor:pointer;font-weight:800;color:var(--ink)}details pre{max-height:170px;overflow:auto;padding:10px;border-radius:8px;background:#142631;color:#eaf3f4;font-size:10px;white-space:pre-wrap}
     @media(max-width:1050px){.save-pill{display:none}.drill-library select{max-width:125px}} @media(max-width:900px){main{grid-template-columns:220px minmax(350px,1fr);padding:18px}.right{display:none}.session-name{display:none}} @media(max-width:650px){header{padding:12px 16px;flex-wrap:wrap;gap:10px}.drill-library{order:3;width:100%}.drill-library select{flex:1;max-width:none}main{display:flex;flex-direction:column;padding:16px;gap:16px}.left{width:100%}.tool-grid{grid-template-columns:repeat(3,1fr)}.panel.left h3,.panel.left .note{display:none}.court{width:100%}.brand{font-size:18px}.step-info{align-items:flex-start;gap:10px;flex-direction:column}.sequence-actions{width:100%}}
+
+    .board-wrap { width:100% }
+    .court-caption { flex-wrap:wrap;gap:8px }
+    .court-caption .action { flex:none }
+    .printable { margin-top:20px }
+    .printable h2 { margin:0 0 8px;font-size:18px;text-transform:none;letter-spacing:normal;color:var(--ink);overflow-wrap:anywhere }
+    .printable-notes { white-space:pre-wrap;overflow-wrap:anywhere }
+    .printable-legend { display:flex;flex-wrap:wrap;gap:6px 16px;margin:12px 0 }
+    .printable-legend div { display:flex;align-items:center;gap:6px;font-size:12px }
+    .printable-legend svg { width:32px;height:12px }
+    .printable-steps { margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px }
+    .printable-step { margin:0;break-inside:avoid }
+    .printable-step figcaption { margin-bottom:5px;font-size:12px;font-weight:800 }
+    .printable-step > svg { display:block;width:100%;height:auto;background:#fff }
+    .printable-step .court-line,.printable-step .court-fill { fill:none;stroke:#a0a7ab;stroke-width:.42 }
+    .printable-step svg > circle[fill="#fff8e9"] { fill:#68747c }
+    @media print {
+      @page { margin:12mm }
+      body { background:#fff }
+      .app,main { display:block;padding:0 }
+      .app:has(.printable:not([hidden])) header,
+      main:has(.printable:not([hidden])) > :not(.board-wrap),
+      .board-wrap:has(.printable:not([hidden])) > :not(.printable),
+      .printable button { display:none }
+      .printable { margin:0;padding:0;border:0;box-shadow:none;background:#fff }
+      .printable,.printable-step { print-color-adjust:exact }
+      .printable-steps { grid-template-columns:repeat(2,minmax(0,1fr)) }
+    }
   </style>
 </head>
 <body>
@@ -31,7 +59,16 @@
     <header><div class="brand"><span class="brand-mark">◒</span><span>Drillboard<small>basketball planner</small></span></div><input class="session-name" aria-label="Drill name" value="Transition attack"><div class="drill-library"><select id="drillPicker" aria-label="Open a saved drill"></select><button class="header-action" id="newDrill">＋ New</button><button class="header-action primary" id="saveDrill">Save</button><button class="header-action drive" id="openDrive">Drive</button><button class="header-action danger" id="deleteDrill" title="Delete this drill">Delete</button><span class="save-pill" id="saveStatus">Saved locally</span></div></header>
     <main>
       <aside class="panel left"><h2>Build your drill</h2><p class="hint">Choose a marker, then click the court to place it.</p><div class="tool-grid"><button class="tool active" data-tool="blue"><span class="token blue">1</span>Blue player</button><button class="tool" data-tool="red"><span class="token red">1</span>Red player</button><button class="tool" data-tool="ball"><span class="token ball">●</span>Basketball</button><button class="tool" data-tool="select">↖&nbsp; Select</button></div><div class="action-row"><button class="action danger" id="deleteSelected">Delete selected</button><button class="action" id="clearCourt">Clear court</button></div><h3>Coaching notes</h3><textarea class="note" placeholder="Add the key points for this sequence…"></textarea></aside>
-      <section class="board-wrap"><div class="court-caption"><strong>Full court</strong><span>Drag markers to move them</span></div><div class="court" id="court" aria-label="Basketball full court drawing board"><div class="empty" id="empty">Place your first marker<span>Pick a player or ball from the left.</span></div><svg viewBox="0 0 100 53" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="53" class="court-line"/><line x1="50" y1="0" x2="50" y2="53" class="court-line"/><circle cx="50" cy="26.5" r="6.4" class="court-line"/><rect x="0" y="17.9" width="20.2" height="17.2" class="court-fill"/><rect x="79.8" y="17.9" width="20.2" height="17.2" class="court-fill"/><circle cx="20.2" cy="26.5" r="6.4" class="court-line"/><circle cx="79.8" cy="26.5" r="6.4" class="court-line"/><path d="M 0 3.2 L 8 3.2 A 23.75 23.75 0 0 1 8 49.8 L 0 49.8 M 100 3.2 L 92 3.2 A 23.75 23.75 0 0 0 92 49.8 L 100 49.8" class="court-line"/><line x1="5.6" y1="23.7" x2="5.6" y2="29.3" class="court-line"/><line x1="94.4" y1="23.7" x2="94.4" y2="29.3" class="court-line"/><circle cx="8" cy="26.5" r=".8" fill="#fff8e9"/><circle cx="92" cy="26.5" r=".8" fill="#fff8e9"/></svg></div></section>
+      <section class="board-wrap"><div class="court-caption"><strong>Full court</strong><span>Drag markers to move them</span><button class="action" id="togglePrintable" aria-controls="printable" aria-expanded="false">Version Imprimable</button></div><div class="court" id="court" aria-label="Basketball full court drawing board"><div class="empty" id="empty">Place your first marker<span>Pick a player or ball from the left.</span></div><svg viewBox="0 0 100 53" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="53" class="court-line"/><line x1="50" y1="0" x2="50" y2="53" class="court-line"/><circle cx="50" cy="26.5" r="6.4" class="court-line"/><rect x="0" y="17.9" width="20.2" height="17.2" class="court-fill"/><rect x="79.8" y="17.9" width="20.2" height="17.2" class="court-fill"/><circle cx="20.2" cy="26.5" r="6.4" class="court-line"/><circle cx="79.8" cy="26.5" r="6.4" class="court-line"/><path d="M 0 3.2 L 8 3.2 A 23.75 23.75 0 0 1 8 49.8 L 0 49.8 M 100 3.2 L 92 3.2 A 23.75 23.75 0 0 0 92 49.8 L 100 49.8" class="court-line"/><line x1="5.6" y1="23.7" x2="5.6" y2="29.3" class="court-line"/><line x1="94.4" y1="23.7" x2="94.4" y2="29.3" class="court-line"/><circle cx="8" cy="26.5" r=".8" fill="#fff8e9"/><circle cx="92" cy="26.5" r=".8" fill="#fff8e9"/></svg></div>
+        <section class="panel printable" id="printable" lang="fr" hidden aria-labelledby="printableTitle">
+          <h2 id="printableTitle"></h2>
+          <p class="printable-notes" id="printableNotes" hidden></p>
+          <p class="hint">Les flèches mènent à l’étape suivante. Les actions du ballon sont déduites de sa proximité avec les joueurs et les paniers.</p>
+          <div class="printable-legend" id="printableLegend"></div>
+          <button class="action" id="printDrill">Imprimer</button>
+          <div class="printable-steps" id="printableSteps"></div>
+        </section>
+      </section>
       <aside class="panel right"><h2>On this step</h2><div class="stat"><span>Blue players</span><b id="blueCount">0</b></div><div class="stat"><span>Red players</span><b id="redCount">0</b></div><div class="stat"><span>Basketballs</span><b id="ballCount">0</b></div><h3>Legend</h3><div class="legend"><div><i style="background:var(--blue)"></i>Offense / blue team</div><div><i style="background:var(--red)"></i>Defense / red team</div><div><i style="background:var(--green)"></i>Basketball</div></div><div class="help"><b>Tip:</b> Start with a formation in Step 1, then add a step and reposition your markers to illustrate the action.</div></aside>
       <section class="panel" style="grid-column:2"><h2>Drill sequence</h2><div class="timeline" id="timeline"></div><div class="step-info"><div><strong id="stepTitle">Step 1</strong><span id="stepDescription">Set the starting positions.</span></div><div class="sequence-actions"><button class="action play" id="playSequence">▶ Play</button><button class="action" id="duplicateStep">Duplicate</button><button class="action danger" id="removeStep">Remove step</button></div></div></section>
     </main>
@@ -55,11 +92,188 @@
     let tool = 'blue', selected = null, steps = [[]], currentStep = 0, nextId = 1, drag = null, playing = false, playTimer = null, currentDrillId, drills = {}, driveApiKey=sessionStorage.getItem('drillboard.driveApiKey')||'', driveEndpoint=localStorage.getItem('drillboard.driveEndpoint')||'';
     const names = {blue:'Blue player',red:'Red player',ball:'Basketball'};
     const clone = value => JSON.parse(JSON.stringify(value));
+    const printable = document.getElementById('printable');
+    const togglePrintable = document.getElementById('togglePrintable');
+    const courtDrawing = court.querySelector('svg');
+    const arrowStyles = {
+      run: { label: 'Déplacement sans ballon', color: '#10212d' },
+      dribble: { label: 'Déplacement avec ballon', color: '#217545' },
+      pass: { label: 'Passe', color: '#215894', dash: '2 1.3' },
+      shot: { label: 'Tir', color: '#a43e21', dash: '3 1 .55 1' },
+      ball: { label: 'Trajectoire du ballon', color: '#675685', dash: '.5 1.2' },
+    };
+
+    function svgElement(tag, attributes) {
+      const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+      return element;
+    }
+
+    // Marker positions are percentages. Use the court's coordinate system for distances and drawing.
+    const courtPoint = item => ({ x: item.x, y: item.y * .53 });
+    const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const baskets = [...courtDrawing.querySelectorAll('circle[fill]')].map(circle => ({
+      x: Number(circle.getAttribute('cx')),
+      y: Number(circle.getAttribute('cy')),
+    }));
+
+    function closestWithin(point, candidates, radius, position) {
+      let closest;
+      for (const candidate of candidates) {
+        const gap = distance(point, position(candidate));
+        if (gap >= radius) continue;
+        closest = candidate;
+        radius = gap;
+      }
+      return closest;
+    }
+
+    function transitionArrows(fromStep, toStep) {
+      const target = new Map(toStep.map(item => [item.id, item]));
+      const fromPlayers = fromStep.filter(item => item.type !== 'ball');
+      const toPlayers = toStep.filter(item => item.type !== 'ball');
+      const carrying = new Set();
+      const ballArrows = [];
+      for (const ball of fromStep.filter(item => item.type === 'ball')) {
+        const next = target.get(ball.id);
+        if (next?.type !== 'ball') continue;
+        const from = courtPoint(ball);
+        const to = courtPoint(next);
+        const passer = closestWithin(from, fromPlayers, 5, courtPoint);
+        const receiver = closestWithin(to, toPlayers, 5, courtPoint);
+        const basket = closestWithin(to, baskets, 2.5, point => point);
+        if (passer && basket && (!receiver || distance(to, basket) < distance(to, courtPoint(receiver)))
+            && distance(from, basket) >= 2.5) {
+          ballArrows.push({ from, to: basket, type: 'shot' });
+        } else if (passer && passer.id === receiver?.id) {
+          carrying.add(passer.id);
+        } else {
+          ballArrows.push({ from, to, type: passer && receiver ? 'pass' : 'ball' });
+        }
+      }
+      const playerArrows = fromPlayers.flatMap(player => {
+        const next = target.get(player.id);
+        return next?.type === player.type
+          ? [{ from: courtPoint(player), to: courtPoint(next), type: carrying.has(player.id) ? 'dribble' : 'run' }]
+          : [];
+      });
+      return [...playerArrows, ...ballArrows];
+    }
+
+    function drawArrow(svg, from, to, type, width = .7, minimumGap = .25) {
+      const length = distance(from, to);
+      if (length < minimumGap) return;
+      const { color, dash } = arrowStyles[type];
+      const dx = (to.x - from.x) / length;
+      const dy = (to.y - from.y) / length;
+      const head = Math.min(2, length * .45);
+      const baseX = to.x - dx * head;
+      const baseY = to.y - dy * head;
+      const wing = head * .48;
+      const arrow = svgElement('g', { 'data-action': type });
+      if (type === 'dribble') {
+        const waves = Math.max(1, Math.round((length - head) / 4));
+        const stride = (length - head) / waves;
+        let path = `M ${from.x} ${from.y}`;
+        for (let wave = 0; wave < waves; wave++) {
+          const middle = stride * (wave + .5);
+          const end = stride * (wave + 1);
+          const offset = (wave % 2 ? -1 : 1) * Math.min(1.8, stride * .7);
+          path += ` Q ${from.x + dx * middle - dy * offset} ${from.y + dy * middle + dx * offset} ${from.x + dx * end} ${from.y + dy * end}`;
+        }
+        arrow.append(svgElement('path', { d:path, fill:'none', stroke:color, 'stroke-width':width }));
+      } else {
+        const line = svgElement('line', {
+          x1:from.x, y1:from.y, x2:baseX, y2:baseY, stroke:color, 'stroke-width':width,
+        });
+        if (dash) line.setAttribute('stroke-dasharray', dash);
+        arrow.append(line);
+      }
+      arrow.append(svgElement('polygon', {
+        points: `${to.x},${to.y} ${baseX - dy * wing},${baseY + dx * wing} ${baseX + dy * wing},${baseY - dx * wing}`,
+        fill:color,
+      }));
+      svg.append(arrow);
+    }
+
+    const legend = document.getElementById('printableLegend');
+    for (const [type, { label }] of Object.entries(arrowStyles)) {
+      const entry = document.createElement('div');
+      const sample = svgElement('svg', { viewBox:'0 0 16 6', 'aria-hidden':'true' });
+      drawArrow(sample, {x:1, y:3}, {x:15, y:3}, type);
+      entry.append(sample, label);
+      legend.append(entry);
+    }
+
+    function renderPrintable() {
+      if (printable.hidden) return;
+      document.getElementById('printableTitle').textContent =
+        document.querySelector('.session-name').value.trim() || 'Exercice sans titre';
+      const notes = document.getElementById('printableNotes');
+      notes.textContent = document.querySelector('.note').value.trim();
+      notes.hidden = !notes.textContent;
+      const diagrams = steps.map((step, index) => {
+        const figure = document.createElement('figure');
+        figure.className = 'printable-step';
+        const caption = document.createElement('figcaption');
+        caption.textContent = index + 1 < steps.length
+          ? `Étape ${index + 1} → ${index + 2}`
+          : `Étape ${index + 1}`;
+        const svg = courtDrawing.cloneNode(true);
+        svg.removeAttribute('aria-hidden');
+        svg.removeAttribute('preserveAspectRatio');
+        svg.setAttribute('role', 'img');
+        const next = steps[index + 1];
+        const arrows = next ? transitionArrows(step, next) : [];
+        svg.setAttribute('aria-label', [caption.textContent, ...new Set(
+          arrows.filter(({ from, to }) => distance(from, to) >= .25).map(({ type }) => arrowStyles[type].label)
+        )].join(' · '));
+        arrows.forEach(({ from, to, type }) => {
+          const length = distance(from, to);
+          const overPlayer = step.some(item => item.type !== 'ball' && distance(to, courtPoint(item)) < 2.3);
+          // Leave the arrowhead visible when the destination is occupied in this frame.
+          if (overPlayer && length > 4.5) {
+            const end = { x: to.x + (from.x - to.x) * 4.5 / length, y: to.y + (from.y - to.y) * 4.5 / length };
+            drawArrow(svg, from, end, type);
+          } else {
+            drawArrow(svg, from, to, type);
+          }
+        });
+        const pieces = [...step.filter(item => item.type !== 'ball'), ...step.filter(item => item.type === 'ball')];
+        pieces.forEach(item => {
+          const { x, y } = courtPoint(item);
+          const ball = item.type === 'ball';
+          svg.append(svgElement('circle', {
+            cx:x, cy:y, r:ball ? 1.05 : 2.05,
+            fill:ball ? '#217545' : item.type === 'blue' ? '#165789' : '#a83b35',
+            stroke:'#fff', 'stroke-width':.3,
+          }));
+          if (ball) return;
+          const text = svgElement('text', {
+            x, y, 'text-anchor':'middle', 'dominant-baseline':'central',
+            'font-size':1.45, 'font-weight':800, fill:'#fff',
+          });
+          text.textContent = (item.type === 'blue' ? 'B' : 'R') + item.number;
+          svg.append(text);
+        });
+        figure.append(caption, svg);
+        return figure;
+      });
+      document.getElementById('printableSteps').replaceChildren(...diagrams);
+    }
+
+    togglePrintable.addEventListener('click', () => {
+      printable.hidden = !printable.hidden;
+      togglePrintable.setAttribute('aria-expanded', String(!printable.hidden));
+      renderPrintable();
+    });
+    document.getElementById('printDrill').addEventListener('click', () => window.print());
+
     function assignPlayerNumbers(){ const assigned={blue:new Map(),red:new Map()},highest={blue:0,red:0};steps.flat().forEach(item=>{if(item.type==='ball')return;if(item.number){assigned[item.type].set(item.id,item.number);highest[item.type]=Math.max(highest[item.type],item.number);}});steps.flat().forEach(item=>{if(item.type==='ball')return;if(!assigned[item.type].has(item.id))assigned[item.type].set(item.id,++highest[item.type]);item.number=assigned[item.type].get(item.id);}); }
     function persistLocal(){ if(!currentDrillId)return; drills[currentDrillId]={name:document.querySelector('.session-name').value.trim()||'Untitled drill',notes:document.querySelector('.note').value,steps:clone(steps)};localStorage.setItem(storageKey,JSON.stringify(drills));refreshPicker();document.getElementById('saveStatus').textContent='Saved locally'; }
-    function markChanged(){ const s=document.getElementById('saveStatus');s.textContent='Saving…';clearTimeout(markChanged.timer);markChanged.timer=setTimeout(persistLocal,350); }
+    function markChanged(){ renderPrintable(); const s=document.getElementById('saveStatus');s.textContent='Saving…';clearTimeout(markChanged.timer);markChanged.timer=setTimeout(persistLocal,350); }
     function save(){ steps[currentStep]=[...court.querySelectorAll('.piece')].map(el=>({id:+el.dataset.id,type:el.dataset.type,number:el.dataset.number?+el.dataset.number:undefined,x:+el.style.left.replace('%',''),y:+el.style.top.replace('%','')})); markChanged(); updateInfo(); }
-    function render(){ court.querySelectorAll('.piece').forEach(e=>e.remove()); steps[currentStep].forEach(addPiece); selected=null; document.getElementById('empty').classList.toggle('hidden',steps[currentStep].length>0); renderTimeline(); updateInfo(); }
+    function render(){ court.querySelectorAll('.piece').forEach(e=>e.remove()); steps[currentStep].forEach(addPiece); selected=null; document.getElementById('empty').classList.toggle('hidden',steps[currentStep].length>0); renderTimeline(); updateInfo(); renderPrintable(); }
     function addPiece(data){ const el=document.createElement('button');el.className=`piece ${data.type}`;el.dataset.id=data.id;el.dataset.type=data.type;if(data.number)el.dataset.number=data.number;el.style.left=data.x+'%';el.style.top=data.y+'%';el.title=data.type==='ball'?names[data.type]:`${names[data.type]} ${data.number}`;el.setAttribute('aria-label',el.title);el.textContent=data.type==='ball'?'●':(data.type==='blue'?'B':'R')+data.number;court.append(el); }
     function renderTimeline(){ timeline.innerHTML='';steps.forEach((_,i)=>{const b=document.createElement('button');b.className='step '+(i===currentStep?'active':'');b.textContent=i+1;b.title='Show step '+(i+1);b.onclick=()=>{if(playing)return;save();currentStep=i;render()};timeline.append(b)});const add=document.createElement('button');add.className='new-step';add.textContent='+';add.title='Add a new step';add.onclick=()=>{if(playing)return;save();steps.splice(currentStep+1,0,clone(steps[currentStep]));currentStep++;render();markChanged();};timeline.append(add);document.getElementById('stepTitle').textContent='Step '+(currentStep+1);document.getElementById('stepDescription').textContent=currentStep===0?'Set the starting positions.':'Move the markers to show the next action.';document.getElementById('removeStep').disabled=steps.length===1; }
     function updateInfo(){ const data=steps[currentStep];['blue','red','ball'].forEach(type=>document.getElementById(type+'Count').textContent=data.filter(x=>x.type===type).length); }
