@@ -17,8 +17,11 @@
     .tool-grid { display:grid;grid-template-columns:1fr 1fr;gap:9px}.tool { min-height:74px;border:1px solid var(--line);border-radius:12px;background:white;text-align:left;padding:10px;display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px;transition:.16s }.tool:hover,.tool.active{border-color:var(--orange);box-shadow:0 0 0 2px #ed7a2f21}.token {width:27px;height:27px;border:3px solid white;box-shadow:0 0 0 1px #ccd1ce;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px}.token.blue{background:var(--blue)}.token.red{background:var(--red)}.token.ball{background:var(--green);font-size:15px}
     .action-row{display:flex;gap:8px;margin-top:10px}.action{flex:1;padding:10px 8px;border-radius:9px;background:#f2f0e9;color:var(--ink);font-size:12px;font-weight:700}.action:hover{background:#e8e5dd}.action.danger{color:#b63c38}.note{width:100%;min-height:108px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--ink);background:#fff;font:inherit;font-size:13px}.note:focus{outline:2px solid #ed7a2f55;border-color:var(--orange)}
     .board-wrap{min-width:0}.court-caption{display:flex;justify-content:space-between;align-items:center;margin:0 4px 11px}.court-caption strong{font-size:16px}.court-caption span{font-size:12px;color:var(--muted)}
-    .court { position:relative; aspect-ratio:1.88/1; overflow:hidden; border:10px solid #b95725; border-radius:7px; background:#eaa065; box-shadow:0 13px 32px #17263027; touch-action:none; user-select:none; }
-    .court:before { content:""; position:absolute;inset:0;opacity:.28;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),#fff 10%,transparent calc(10% + 1px)); } .court svg { position:absolute;inset:0;width:100%;height:100%;pointer-events:none }.court-line{fill:none;stroke:#fff8e9;stroke-width:1.15}.court-fill{fill:#d9864d;stroke:#fff8e9;stroke-width:1.15}.court text{fill:#fff8e9;font-size:3px;font-weight:700;letter-spacing:.3px}
+    .court { position:relative;aspect-ratio:28/15;background:#e7a86e;box-shadow:0 13px 32px #17263027;touch-action:none;user-select:none }
+    .court > svg { position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none }
+    .court-parquet { fill:#e7a86e }
+    .court-planks { fill:none;stroke:#ab622f;stroke-width:.018;opacity:.45 }
+    .court-line { fill:none;stroke:#fff9ed;stroke-width:.05 }
     .piece { position:absolute;z-index:2;width:34px;height:34px;border:3px solid white;border-radius:50%;box-shadow:0 2px 7px #25252555;transform:translate(-50%,-50%);display:grid;place-items:center;color:white;font-size:11px;font-weight:800;cursor:grab;transition:box-shadow .12s,transform .12s}.piece:hover{transform:translate(-50%,-50%) scale(1.09)}.piece.selected{box-shadow:0 0 0 4px #fff,0 0 0 7px var(--ink)}.piece.blue{background:var(--blue)}.piece.red{background:var(--red)}.piece.ball{background:var(--green);font-size:18px}.piece.dragging{cursor:grabbing;transition:none}.piece.animating{transition:left .72s cubic-bezier(.35,0,.2,1),top .72s cubic-bezier(.35,0,.2,1),opacity .25s ease;pointer-events:none}.piece.entering,.piece.leaving{opacity:0}
     .timeline { display:flex;align-items:center;gap:8px;overflow:auto;padding:3px 1px 8px }.step { flex:0 0 43px;height:43px;border-radius:11px;background:#f2f0e9;color:#6b7479;font-weight:800;position:relative}.step.active{background:var(--dark);color:#fff}.step:not(:last-child):after{content:"";width:9px;height:1px;background:#c8c6be;position:absolute;left:45px;top:21px}.new-step{flex:0 0 43px;height:43px;border:1px dashed #aeb4b3;border-radius:11px;background:transparent;font-size:22px;color:#68747c}.step-info{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;margin-top:4px}.step-info strong{font-size:14px}.step-info span{display:block;font-size:12px;color:var(--muted)}.sequence-actions{display:flex;gap:8px}.play{background:var(--orange);color:#fff;min-width:88px}.play:hover{background:#d96622}.play.playing{background:var(--dark)}
     .right .legend{display:grid;gap:8px}.legend div{display:flex;align-items:center;gap:9px;font-size:13px}.legend i{width:10px;height:10px;border-radius:50%;display:block}.stat{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid #ece9e1;font-size:13px}.stat b{font-size:18px}.help{margin-top:15px;padding:12px;border-radius:10px;background:#fff3e8;font-size:12px;color:#80522d}.empty{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;color:#fff9ec;font-weight:700;font-size:14px;text-shadow:0 1px 2px #8c421d}.empty span{display:block;font-size:11px;font-weight:500;margin-top:4px}.empty.hidden{display:none}
@@ -34,12 +37,11 @@
     .printable-legend { display:flex;flex-wrap:wrap;gap:6px 16px;margin:12px 0 }
     .printable-legend div { display:flex;align-items:center;gap:6px;font-size:12px }
     .printable-legend svg { width:32px;height:12px }
-    .printable-steps { margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px }
+    .printable-steps { margin-top:12px }
+    .printable-step + .printable-step { margin-top:20px }
     .printable-step { margin:0;break-inside:avoid }
     .printable-step figcaption { margin-bottom:5px;font-size:12px;font-weight:800 }
-    .printable-step > svg { display:block;width:100%;height:auto;background:#fff }
-    .printable-step .court-line,.printable-step .court-fill { fill:none;stroke:#a0a7ab;stroke-width:.42 }
-    .printable-step svg > circle[fill="#fff8e9"] { fill:#68747c }
+    .printable-step > svg { display:block;width:100%;height:auto }
     @media print {
       @page { margin:12mm }
       body { background:#fff }
@@ -50,7 +52,6 @@
       .printable button { display:none }
       .printable { margin:0;padding:0;border:0;box-shadow:none;background:#fff }
       .printable,.printable-step { print-color-adjust:exact }
-      .printable-steps { grid-template-columns:repeat(2,minmax(0,1fr)) }
     }
   </style>
 </head>
@@ -59,7 +60,24 @@
     <header><div class="brand"><span class="brand-mark">◒</span><span>Drillboard<small>basketball planner</small></span></div><input class="session-name" aria-label="Drill name" value="Transition attack"><div class="drill-library"><select id="drillPicker" aria-label="Open a saved drill"></select><button class="header-action" id="newDrill">＋ New</button><button class="header-action primary" id="saveDrill">Save</button><button class="header-action drive" id="openDrive">Drive</button><button class="header-action danger" id="deleteDrill" title="Delete this drill">Delete</button><span class="save-pill" id="saveStatus">Saved locally</span></div></header>
     <main>
       <aside class="panel left"><h2>Build your drill</h2><p class="hint">Choose a marker, then click the court to place it.</p><div class="tool-grid"><button class="tool active" data-tool="blue"><span class="token blue">1</span>Blue player</button><button class="tool" data-tool="red"><span class="token red">1</span>Red player</button><button class="tool" data-tool="ball"><span class="token ball">●</span>Basketball</button><button class="tool" data-tool="select">↖&nbsp; Select</button></div><div class="action-row"><button class="action danger" id="deleteSelected">Delete selected</button><button class="action" id="clearCourt">Clear court</button></div><h3>Coaching notes</h3><textarea class="note" placeholder="Add the key points for this sequence…"></textarea></aside>
-      <section class="board-wrap"><div class="court-caption"><strong>Full court</strong><span>Drag markers to move them</span><button class="action" id="togglePrintable" aria-controls="printable" aria-expanded="false">Version Imprimable</button></div><div class="court" id="court" aria-label="Basketball full court drawing board"><div class="empty" id="empty">Place your first marker<span>Pick a player or ball from the left.</span></div><svg viewBox="0 0 100 53" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="53" class="court-line"/><line x1="50" y1="0" x2="50" y2="53" class="court-line"/><circle cx="50" cy="26.5" r="6.4" class="court-line"/><rect x="0" y="17.9" width="20.2" height="17.2" class="court-fill"/><rect x="79.8" y="17.9" width="20.2" height="17.2" class="court-fill"/><circle cx="20.2" cy="26.5" r="6.4" class="court-line"/><circle cx="79.8" cy="26.5" r="6.4" class="court-line"/><path d="M 0 3.2 L 8 3.2 A 23.75 23.75 0 0 1 8 49.8 L 0 49.8 M 100 3.2 L 92 3.2 A 23.75 23.75 0 0 0 92 49.8 L 100 49.8" class="court-line"/><line x1="5.6" y1="23.7" x2="5.6" y2="29.3" class="court-line"/><line x1="94.4" y1="23.7" x2="94.4" y2="29.3" class="court-line"/><circle cx="8" cy="26.5" r=".8" fill="#fff8e9"/><circle cx="92" cy="26.5" r=".8" fill="#fff8e9"/></svg></div>
+      <section class="board-wrap"><div class="court-caption"><strong>Full court</strong><span>Drag markers to move them</span><button class="action" id="togglePrintable" aria-controls="printable" aria-expanded="false">Version Imprimable</button></div><div class="court" id="court" aria-label="Basketball full court drawing board"><div class="empty" id="empty">Place your first marker<span>Pick a player or ball from the left.</span></div>
+        <svg viewBox="0 0 28 15" aria-hidden="true">
+          <rect class="court-parquet" x="-.2" y="-.2" width="28.4" height="15.4"/>
+          <path class="court-planks" d="M 0 1 H 28 M 0 2 H 28 M 0 3 H 28 M 0 4 H 28 M 0 5 H 28 M 0 6 H 28 M 0 7 H 28 M 0 8 H 28 M 0 9 H 28 M 0 10 H 28 M 0 11 H 28 M 0 12 H 28 M 0 13 H 28 M 0 14 H 28"/>
+          <!-- FIBA dimensions in metres. Paths follow the centre of the 5 cm lines. -->
+          <g class="court-line">
+            <rect x="-.025" y="-.025" width="28.05" height="15.05"/>
+            <path d="M 14 -.15 V 15.15 M 8.325 15 V 15.15 M 19.675 15 V 15.15"/>
+            <circle cx="14" cy="7.5" r="1.775"/>
+            <path d="M 0 5.075 H 5.775 V 9.925 H 0 M 5.775 5.7 V 9.3 M 5.775 5.725 A 1.775 1.775 0 0 1 5.775 9.275"/>
+            <path d="M 28 5.075 H 22.225 V 9.925 H 28 M 22.225 5.7 V 9.3 M 22.225 5.725 A 1.775 1.775 0 0 0 22.225 9.275"/>
+            <path d="M 0 .925 H 2.987 A 6.725 6.725 0 0 1 2.987 14.075 H 0 M 28 .925 H 25.013 A 6.725 6.725 0 0 0 25.013 14.075 H 28"/>
+            <path d="M 1.2 6.175 H 1.575 A 1.325 1.325 0 0 1 1.575 8.825 H 1.2 M 26.8 6.175 H 26.425 A 1.325 1.325 0 0 0 26.425 8.825 H 26.8"/>
+            <path d="M 1.2 6.6 V 8.4 M 26.8 6.6 V 8.4"/>
+            <circle data-basket="" cx="1.575" cy="7.5" r=".225"/>
+            <circle data-basket="" cx="26.425" cy="7.5" r=".225"/>
+          </g>
+        </svg></div>
         <section class="panel printable" id="printable" lang="fr" hidden aria-labelledby="printableTitle">
           <h2 id="printableTitle"></h2>
           <p class="printable-notes" id="printableNotes" hidden></p>
@@ -110,11 +128,13 @@
     }
 
     // Marker positions are percentages. Use the court's coordinate system for distances and drawing.
-    const courtPoint = item => ({ x: item.x, y: item.y * .53 });
+    const { width: courtLength, height: courtWidth } = courtDrawing.viewBox.baseVal;
+    const diagramScale = courtLength / 100;
+    const courtPoint = item => ({ x: item.x, y: item.y * courtWidth / courtLength });
     const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-    const baskets = [...courtDrawing.querySelectorAll('circle[fill]')].map(circle => ({
-      x: Number(circle.getAttribute('cx')),
-      y: Number(circle.getAttribute('cy')),
+    const baskets = [...courtDrawing.querySelectorAll('[data-basket]')].map(circle => ({
+      x: Number(circle.getAttribute('cx')) / diagramScale,
+      y: Number(circle.getAttribute('cy')) / diagramScale,
     }));
 
     function closestWithin(point, candidates, radius, position) {
@@ -221,7 +241,9 @@
           : `Étape ${index + 1}`;
         const svg = courtDrawing.cloneNode(true);
         svg.removeAttribute('aria-hidden');
-        svg.removeAttribute('preserveAspectRatio');
+        svg.setAttribute('viewBox', '-.2 -.2 28.4 15.4');
+        const overlay = svgElement('g', { transform: `scale(${diagramScale})` });
+        svg.append(overlay);
         svg.setAttribute('role', 'img');
         const next = steps[index + 1];
         const arrows = next ? transitionArrows(step, next) : [];
@@ -234,16 +256,16 @@
           // Leave the arrowhead visible when the destination is occupied in this frame.
           if (overPlayer && length > 4.5) {
             const end = { x: to.x + (from.x - to.x) * 4.5 / length, y: to.y + (from.y - to.y) * 4.5 / length };
-            drawArrow(svg, from, end, type);
+            drawArrow(overlay, from, end, type);
           } else {
-            drawArrow(svg, from, to, type);
+            drawArrow(overlay, from, to, type);
           }
         });
         const pieces = [...step.filter(item => item.type !== 'ball'), ...step.filter(item => item.type === 'ball')];
         pieces.forEach(item => {
           const { x, y } = courtPoint(item);
           const ball = item.type === 'ball';
-          svg.append(svgElement('circle', {
+          overlay.append(svgElement('circle', {
             cx:x, cy:y, r:ball ? 1.05 : 2.05,
             fill:ball ? '#217545' : item.type === 'blue' ? '#165789' : '#a83b35',
             stroke:'#fff', 'stroke-width':.3,
@@ -254,7 +276,7 @@
             'font-size':1.45, 'font-weight':800, fill:'#fff',
           });
           text.textContent = (item.type === 'blue' ? 'B' : 'R') + item.number;
-          svg.append(text);
+          overlay.append(text);
         });
         figure.append(caption, svg);
         return figure;
